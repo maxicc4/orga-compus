@@ -88,7 +88,7 @@ int main(int argc, char *argv[]) {
       i++;
     }
   }
-  if (input_path_found){
+  if (input_path_found && argv[i+1] != "-"){
     openFile(&input_file, argv[i+1], "r");
   } else {
     input_file.file = stdin;
@@ -103,7 +103,7 @@ int main(int argc, char *argv[]) {
       i++;
     }
   }
-  if (output_path_found){
+  if (output_path_found && argv[i+1] != "-"){
     openFile(&output_file, argv[i+1], "w");
   } else {
     output_file.file = stdout;
