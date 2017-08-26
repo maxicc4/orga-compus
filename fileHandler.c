@@ -28,11 +28,11 @@ int closeFile(file_t *self) {
 //read_word (desde un archivo)
 //Lee una palabra desde un archivo y lo almacena en el buffer
 //Devuelve ERROR en caso de fin de archivo o error de lectura
-//y SUCCESS en caso de exito.
+//y en caso de exito devuelve el largo de la palabra.
 int read_word(file_t *file, char *buff) {
   char c;
   bool isValid = true;
-  unsigned short pos = 0;
+  unsigned short len = 0;
 
   while (isValid) {
     c = fgetc(file->file);
@@ -40,13 +40,13 @@ int read_word(file_t *file, char *buff) {
       return ERROR;
     }
     if (charIsValid(c)) {
-      buff[pos] = c;
-      pos++;
+      buff[len] = c;
+      len++;
     } else {
       isValid = false;
     }
   }
-  return SUCCESS;
+  return len;
 }
 
 //charIsValid
@@ -55,6 +55,7 @@ int read_word(file_t *file, char *buff) {
 bool charIsValid(char c) {
   return ((c <= 122 && c >= 97)
       || (c <= 90 && c >= 65)
+      || (c <= 48 && c >= 57)
       || (c == 45)
       || (c == 95));
 }
