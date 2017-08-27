@@ -55,7 +55,7 @@ int read_word(file_t *file, char *buff) {
 bool charIsValid(char c) {
   return ((c <= 122 && c >= 97)
       || (c <= 90 && c >= 65)
-      || (c <= 48 && c >= 57)
+      || (c >= 48 && c <= 57)
       || (c == 45)
       || (c == 95));
 }
