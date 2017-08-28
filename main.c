@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdbool.h>
+#include <string.h>
 #include "fileHandler.h"
 
 //is_palindrome
@@ -10,7 +11,7 @@ bool is_palindrome(char *buff) {
   char firstHalfWord[BUFFER_SIZE / 2];
   char lastHalfWord[BUFFER_SIZE / 2];
 
-  len = strnlen(buff, BUFFER_SIZE);
+  len = strlen(buff);
   if (len <= 1){
     return false;
   }
