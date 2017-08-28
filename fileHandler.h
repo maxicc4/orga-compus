@@ -18,6 +18,10 @@ int openFile(file_t *self, const char *path, const char *mode);
 
 int closeFile(file_t *self);
 
-int read_word(file_t *file, char *buff);
+int read_word(file_t *file, char **buff, int* buffer_size);
+
+void write_word(file_t *file, char* buff, int size);
+
+bool at_eof(file_t * file);
 
 #endif /* FILEHANDLER_H_ */
