@@ -6,7 +6,7 @@
 #include "fileHandler.h"
 
 //is_palindrome
-//Devuelve true si la palabra almacenada en buff es palíndromo
+//Devuelve true si la palabra almacenada en buff es palindromo
 //y false en caso contrario.
 bool is_palindrome(char *buff, size_t len) {
 	if (len <= 1)
