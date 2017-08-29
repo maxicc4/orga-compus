@@ -5,9 +5,7 @@
 
 #include "fileHandler.h"
 
-//is_palindrome
-//Devuelve true si la palabra almacenada en buff es palindromo
-//y false en caso contrario.
+//Devuelve true si la palabra almacenada en buff es palindromo y false en caso contrario.
 bool is_palindrome(char *buff, size_t len) {
 	if (len <= 1)
 		return false;
@@ -19,10 +17,7 @@ bool is_palindrome(char *buff, size_t len) {
 	return true;
 }
 
-//processFile
-//procesa el archivo input_file palabra por palabra y escribe
-//los resultados en output_file.
-//PRE: los archivos estan inicializados
+//procesa el archivo input_file palabra por palabra y escribe los resultados en output_file.
 int processFile(file_t * input_file, file_t * output_file) {
 	int buffer_size = BUFFER_CHUNK_SIZE;
 	char* buffer = (char*) malloc(sizeof(char) * buffer_size);
@@ -31,28 +26,26 @@ int processFile(file_t * input_file, file_t * output_file) {
 	while (!at_eof(input_file)) {
 		size = read_word(input_file, &buffer, &buffer_size);
 
-		if (is_palindrome(buffer, size)) {
+		if (is_palindrome(buffer, size))
 			write_word(output_file, buffer, size);
-		}
 	}
 
 	free(buffer);
-
 	return SUCCESS;
 }
 
-void show_help_menu(){
-  printf("%s","Usage:\n\t"
-      "tp0 -h\n\t"
-      "tp0 -V\n\t"
-      "tp0 [options]\n"
-      "Options:\n\t"
-      "-V, --version \tPrint version and quit.\n\t"
-      "-h, --help \tPrint this information.\n\t"
-      "-i, --input \tLocation of the input file.\n\t"
-      "-o, --output \tLocation of the output file.\n"
-      "Examples:\n\t"
-      "tp0 -i ~/input -o ~/output\n");
+void show_help_menu() {
+	printf("%s", "Usage:\n\t"
+			"tp0 -h\n\t"
+			"tp0 -V\n\t"
+			"tp0 [options]\n"
+			"Options:\n\t"
+			"-V, --version \tPrint version and quit.\n\t"
+			"-h, --help \tPrint this information.\n\t"
+			"-i, --input \tLocation of the input file.\n\t"
+			"-o, --output \tLocation of the output file.\n"
+			"Examples:\n\t"
+			"tp0 -i ~/input -o ~/output\n");
 }
 
 int main(int argc, char *argv[]) {
@@ -98,17 +91,15 @@ int main(int argc, char *argv[]) {
 
   	int status = SUCCESS;
 
-	if (status == SUCCESS && input_path) {
+	if (status == SUCCESS && input_path)
 		status = openFile(&input_file, input_path, "r");
-	} else {
+	else
 		input_file.file = stdin;
-	}
 
-	if (status == SUCCESS && output_path) {
+	if (status == SUCCESS && output_path)
 		status = openFile(&output_file, output_path, "w");
-	} else {
+	else
 		output_file.file = stdout;
-	}
 
 	if (status != ERROR)
 		status = processFile(&input_file, &output_file);
