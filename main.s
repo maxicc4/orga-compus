@@ -21,8 +21,7 @@ is_palindrome:
 	sw	$a0,24($fp)
 	sw	$a1,28($fp)
 	lw	$v0,28($fp)
-	sltu	$v0,$v0,2
-	beq	$v0,$zero,$L18
+	bne	$v0,$zero,$L18
 	sw	$zero,12($fp)
 	b	$L17
 $L18:
@@ -93,43 +92,50 @@ processFile:
 	move	$fp,$sp
 	sw	$a0,56($fp)
 	sw	$a1,60($fp)
-	li	$v0,32			# 0x20
-	sw	$v0,24($fp)
-	lw	$a0,24($fp)
-	la	$t9,malloc
+	addu	$a0,$fp,24
+	li	$a1,32			# 0x20
+	la	$t9,init
 	jal	$ra,$t9
-	sw	$v0,28($fp)
-	sw	$zero,32($fp)
+	sw	$v0,32($fp)
+	sw	$zero,36($fp)
 $L25:
+	lw	$v0,32($fp)
+	bne	$v0,$zero,$L26
 	lw	$a0,56($fp)
 	la	$t9,at_eof
 	jal	$ra,$t9
-	beq	$v0,$zero,$L27
-	b	$L26
-$L27:
-	addu	$v0,$fp,28
+	bne	$v0,$zero,$L26
 	lw	$a0,56($fp)
-	move	$a1,$v0
-	addu	$a2,$fp,24
+	addu	$a1,$fp,24
 	la	$t9,read_word
 	jal	$ra,$t9
+	sw	$v0,36($fp)
+	lw	$v0,36($fp)
+	bgez	$v0,$L29
+	li	$v0,-1			# 0xffffffffffffffff
 	sw	$v0,32($fp)
-	lw	$a0,28($fp)
-	lw	$a1,32($fp)
+	b	$L25
+$L29:
+	addu	$a0,$fp,24
+	la	$t9,get_buff
+	jal	$ra,$t9
+	move	$a0,$v0
+	lw	$a1,36($fp)
 	la	$t9,is_palindrome
 	jal	$ra,$t9
 	beq	$v0,$zero,$L25
 	lw	$a0,60($fp)
-	lw	$a1,28($fp)
-	lw	$a2,32($fp)
+	addu	$a1,$fp,24
+	lw	$a2,36($fp)
 	la	$t9,write_word
 	jal	$ra,$t9
+	sw	$v0,32($fp)
 	b	$L25
 $L26:
-	lw	$a0,28($fp)
-	la	$t9,free
+	addu	$a0,$fp,24
+	la	$t9,destroy
 	jal	$ra,$t9
-	move	$v0,$zero
+	lw	$v0,32($fp)
 	move	$sp,$fp
 	lw	$ra,48($sp)
 	lw	$fp,44($sp)
@@ -229,9 +235,12 @@ $LC7:
 	.ascii	"Palindrom Finder: v1.0\n\000"
 	.align	2
 $LC8:
-	.ascii	"r\000"
+	.ascii	"-\000"
 	.align	2
 $LC9:
+	.ascii	"r\000"
+	.align	2
+$LC10:
 	.ascii	"w\000"
 	.text
 	.align	2
@@ -255,7 +264,7 @@ main:
 	sw	$zero,40($fp)
 	sw	$zero,44($fp)
 	sw	$zero,52($fp)
-$L31:
+$L34:
 	addu	$v0,$fp,52
 	sw	$v0,16($sp)
 	lw	$a0,88($fp)
@@ -270,139 +279,149 @@ $L31:
 	sw	$v0,64($fp)
 	lw	$v1,64($fp)
 	sltu	$v0,$v1,49
-	beq	$v0,$zero,$L33
+	beq	$v0,$zero,$L36
 	lw	$v0,64($fp)
 	sll	$v1,$v0,2
-	la	$v0,$L41
+	la	$v0,$L44
 	addu	$v0,$v1,$v0
 	lw	$v0,0($v0)
 	.cpadd	$v0
 	j	$v0
 	.rdata
 	.align	2
-$L41:
-	.gpword	$L39
-	.gpword	$L33
-	.gpword	$L33
-	.gpword	$L33
-	.gpword	$L33
-	.gpword	$L33
-	.gpword	$L33
-	.gpword	$L33
-	.gpword	$L33
-	.gpword	$L33
-	.gpword	$L33
-	.gpword	$L33
-	.gpword	$L33
-	.gpword	$L33
-	.gpword	$L33
-	.gpword	$L33
-	.gpword	$L33
-	.gpword	$L33
-	.gpword	$L33
-	.gpword	$L33
-	.gpword	$L33
-	.gpword	$L33
-	.gpword	$L33
-	.gpword	$L35
-	.gpword	$L33
-	.gpword	$L33
-	.gpword	$L33
-	.gpword	$L33
-	.gpword	$L33
-	.gpword	$L33
-	.gpword	$L33
-	.gpword	$L33
-	.gpword	$L33
-	.gpword	$L33
-	.gpword	$L33
-	.gpword	$L33
-	.gpword	$L33
-	.gpword	$L33
-	.gpword	$L33
-	.gpword	$L33
-	.gpword	$L33
+$L44:
+	.gpword	$L42
 	.gpword	$L36
-	.gpword	$L37
-	.gpword	$L33
-	.gpword	$L33
-	.gpword	$L33
-	.gpword	$L33
-	.gpword	$L33
+	.gpword	$L36
+	.gpword	$L36
+	.gpword	$L36
+	.gpword	$L36
+	.gpword	$L36
+	.gpword	$L36
+	.gpword	$L36
+	.gpword	$L36
+	.gpword	$L36
+	.gpword	$L36
+	.gpword	$L36
+	.gpword	$L36
+	.gpword	$L36
+	.gpword	$L36
+	.gpword	$L36
+	.gpword	$L36
+	.gpword	$L36
+	.gpword	$L36
+	.gpword	$L36
+	.gpword	$L36
+	.gpword	$L36
 	.gpword	$L38
+	.gpword	$L36
+	.gpword	$L36
+	.gpword	$L36
+	.gpword	$L36
+	.gpword	$L36
+	.gpword	$L36
+	.gpword	$L36
+	.gpword	$L36
+	.gpword	$L36
+	.gpword	$L36
+	.gpword	$L36
+	.gpword	$L36
+	.gpword	$L36
+	.gpword	$L36
+	.gpword	$L36
+	.gpword	$L36
+	.gpword	$L36
+	.gpword	$L39
+	.gpword	$L40
+	.gpword	$L36
+	.gpword	$L36
+	.gpword	$L36
+	.gpword	$L36
+	.gpword	$L36
+	.gpword	$L41
 	.text
-$L35:
+$L38:
 	la	$a0,$LC0
 	la	$a1,$LC7
 	la	$t9,printf
 	jal	$ra,$t9
 	sw	$zero,60($fp)
-	b	$L30
-$L36:
-	la	$t9,show_help_menu
-	jal	$ra,$t9
-	sw	$zero,60($fp)
-	b	$L30
-$L37:
-	lw	$v0,optarg
-	sw	$v0,40($fp)
-	b	$L33
-$L38:
-	lw	$v0,optarg
-	sw	$v0,44($fp)
 	b	$L33
 $L39:
 	la	$t9,show_help_menu
 	jal	$ra,$t9
+	sw	$zero,60($fp)
+	b	$L33
+$L40:
+	lw	$v0,optarg
+	sw	$v0,40($fp)
+	b	$L36
+$L41:
+	lw	$v0,optarg
+	sw	$v0,44($fp)
+	b	$L36
+$L42:
+	la	$t9,show_help_menu
+	jal	$ra,$t9
 	li	$v0,-1			# 0xffffffffffffffff
 	sw	$v0,60($fp)
-	b	$L30
-$L33:
+	b	$L33
+$L36:
 	lw	$v1,48($fp)
 	li	$v0,-1			# 0xffffffffffffffff
-	bne	$v1,$v0,$L31
+	bne	$v1,$v0,$L34
 	sw	$zero,56($fp)
 	lw	$v0,56($fp)
-	bne	$v0,$zero,$L43
+	bne	$v0,$zero,$L46
 	lw	$v0,40($fp)
-	beq	$v0,$zero,$L43
+	beq	$v0,$zero,$L46
+	lw	$a0,40($fp)
+	la	$a1,$LC8
+	la	$t9,strcmp
+	jal	$ra,$t9
+	beq	$v0,$zero,$L46
 	addu	$a0,$fp,32
 	lw	$a1,40($fp)
-	la	$a2,$LC8
-	la	$t9,openFile
-	jal	$ra,$t9
-	sw	$v0,56($fp)
-	b	$L44
-$L43:
-	la	$v0,__sF
-	sw	$v0,32($fp)
-$L44:
-	lw	$v0,56($fp)
-	bne	$v0,$zero,$L45
-	lw	$v0,44($fp)
-	beq	$v0,$zero,$L45
-	addu	$v0,$fp,36
-	move	$a0,$v0
-	lw	$a1,44($fp)
 	la	$a2,$LC9
 	la	$t9,openFile
 	jal	$ra,$t9
 	sw	$v0,56($fp)
-	b	$L46
-$L45:
+	b	$L47
+$L46:
+	la	$v0,__sF
+	sw	$v0,32($fp)
+$L47:
+	lw	$v0,56($fp)
+	bne	$v0,$zero,$L48
+	lw	$v0,44($fp)
+	beq	$v0,$zero,$L48
+	lw	$a0,40($fp)
+	la	$a1,$LC8
+	la	$t9,strcmp
+	jal	$ra,$t9
+	beq	$v0,$zero,$L48
+	addu	$v0,$fp,36
+	move	$a0,$v0
+	lw	$a1,44($fp)
+	la	$a2,$LC10
+	la	$t9,openFile
+	jal	$ra,$t9
+	sw	$v0,56($fp)
+	b	$L49
+$L48:
 	la	$v0,__sF+88
 	sw	$v0,36($fp)
-$L46:
+$L49:
 	lw	$v1,56($fp)
 	li	$v0,-1			# 0xffffffffffffffff
-	beq	$v1,$v0,$L47
+	beq	$v1,$v0,$L50
 	addu	$v0,$fp,36
 	addu	$a0,$fp,32
 	move	$a1,$v0
 	la	$t9,processFile
 	jal	$ra,$t9
 	sw	$v0,56($fp)
-$L47:
+$L50:
 	addu	$a0,$fp,32
 	la	$t9,closeFile
 	jal	$ra,$t9
@@ -412,7 +431,7 @@ $L47:
 	jal	$ra,$t9
 	lw	$v0,56($fp)
 	sw	$v0,60($fp)
-$L30:
+$L33:
 	lw	$v0,60($fp)
 	move	$sp,$fp
 	lw	$ra,80($sp)
