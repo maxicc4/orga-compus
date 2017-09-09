@@ -7,7 +7,7 @@
 int openFile(file_t *self, const char *path, const char *mode) {
 	self->file = fopen(path, mode);
 	if (self->file == NULL) {
-		perror("Error opening file.\n");
+		perror("Error opening file");
 		return ERROR;
 	}
 	return SUCCESS;
@@ -16,10 +16,11 @@ int openFile(file_t *self, const char *path, const char *mode) {
 //closeFile
 //Cierra el archivo. Devuelve SUCCESS en caso de exito, ERROR en caso contrario.
 int closeFile(file_t *self) {
-	int s;
-	s = fclose(self->file);
-	if (s == ERROR) {
-		perror("In file fileHandler.c, function closeFile: ERROR closing file\n");
+	if (self->file == NULL)
+		return ERROR;
+
+	if (fclose(self->file) == ERROR) {
+		perror("ERROR closing file");
 		return ERROR;
 	}
 	return SUCCESS;
@@ -29,23 +30,29 @@ bool at_eof(file_t * file) {
 	return feof(file->file) != 0;
 }
 
+bool has_error(file_t * file) {
+	return ferror(file->file) != 0;
+}
+
 //read_word (desde un archivo)
 //Lee una palabra desde un archivo y lo almacena en el buffer
 //y en caso de exito devuelve el largo de la palabra.
-int read_word(file_t *file, char **buff, int *buffer_size) {
-	char c;
+int read_word(file_t *file, buff_t *buff) {
+	int c;
 	bool isValid = true;
-	unsigned short len = 0;
+	unsigned int len = 0;
 
 	while (isValid) {
 		c = fgetc(file->file);
-		if (charIsValid(c)) {
-			if (len == *buffer_size) {
-				*buffer_size += BUFFER_CHUNK_SIZE;
-				(*buff) = (char*) realloc(*buff, *buffer_size * sizeof(char));
-			}
-			(*buff)[len] = c;
-			len++;
+
+		if (has_error(file)) {
+			perror("Error leyendo del archivo");
+			return ERROR;
+		}
+
+		if (! at_eof(file) && charIsValid(c)) {
+			if (put_char(buff, len++, c) == ERROR)
+				return ERROR;
 		} else {
 			isValid = false;
 		}
@@ -53,15 +60,22 @@ int read_word(file_t *file, char **buff, int *buffer_size) {
 	return len;
 }
 
-void write_word(file_t *file, char *buffer, int size) {
-	fwrite(buffer, size, sizeof(char), file->file);
-	fputc('\n', file->file);
+int write_word(file_t *file, buff_t *buff, int size) {
+	if (fwrite(get_buff(buff), sizeof(char), size, file->file) == size)
+		fputc('\n', file->file);
+
+	if (ferror(file->file)) {
+		perror("Error escribiendo en el archivo");
+		return ERROR;
+	}
+
+	return SUCCESS;
 }
 
 //charIsValid
 //Devuelve true si el caracter pertenece a los conjuntos
 // {a-z} o {A-Z} o {-} o {_}, false en caso contrario.
-bool charIsValid(char c) {
+bool charIsValid(int c) {
 	return ((c <= 122 && c >= 97) || (c <= 90 && c >= 65)
 			|| (c >= 48 && c <= 57) || (c == 45) || (c == 95));
 }

@@ -3,6 +3,6 @@
 
 #define ERROR -1
 #define SUCCESS 0
-#define BUFFER_CHUNK_SIZE 32
+#define BUFFER_INITIAL_SIZE 32
 
 #endif /* FLAGS_H_ */

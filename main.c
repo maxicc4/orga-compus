@@ -4,34 +4,37 @@
 #include <ctype.h>
 
 #include "fileHandler.h"
+#include "buff.h"
 
 //Devuelve true si la palabra almacenada en buff es palindromo y false en caso contrario.
 bool is_palindrome(char *buff, size_t len) {
-	if (len <= 1)
+	if (len == 0)
 		return false;
 
 	for (int i = 0; i < len / 2; ++i) {
 		if (tolower(buff[i]) != tolower(buff[len - 1 - i]))
 			return false;
 	}
+
 	return true;
 }
 
 //procesa el archivo input_file palabra por palabra y escribe los resultados en output_file.
 int processFile(file_t * input_file, file_t * output_file) {
-	int buffer_size = BUFFER_CHUNK_SIZE;
-	char* buffer = (char*) malloc(sizeof(char) * buffer_size);
+	buff_t buff;
+	int status = init(&buff, BUFFER_INITIAL_SIZE);
 
 	int size = 0;
-	while (!at_eof(input_file)) {
-		size = read_word(input_file, &buffer, &buffer_size);
-
-		if (is_palindrome(buffer, size))
-			write_word(output_file, buffer, size);
+	while (status == SUCCESS && !at_eof(input_file)) {
+		size = read_word(input_file, &buff);
+		if (size < 0)
+			status = ERROR;
+		else if (is_palindrome(get_buff(&buff), size))
+			status = write_word(output_file, &buff, size);
 	}
 
-	free(buffer);
-	return SUCCESS;
+	destroy(&buff);
+	return status;
 }
 
 void show_help_menu() {
@@ -91,12 +94,12 @@ int main(int argc, char *argv[]) {
 
   	int status = SUCCESS;
 
-	if (status == SUCCESS && input_path)
+	if (status == SUCCESS && input_path && strcmp(input_path, "-") != 0)
 		status = openFile(&input_file, input_path, "r");
 	else
 		input_file.file = stdin;
 
-	if (status == SUCCESS && output_path)
+	if (status == SUCCESS && output_path && strcmp(input_path, "-") != 0)
 		status = openFile(&output_file, output_path, "w");
 	else
 		output_file.file = stdout;
