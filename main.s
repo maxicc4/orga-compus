@@ -395,7 +395,7 @@ $L47:
 	bne	$v0,$zero,$L48
 	lw	$v0,44($fp)
 	beq	$v0,$zero,$L48
-	lw	$a0,40($fp)
+	lw	$a0,44($fp)
 	la	$a1,$LC8
 	la	$t9,strcmp
 	jal	$ra,$t9

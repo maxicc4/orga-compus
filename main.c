@@ -99,7 +99,7 @@ int main(int argc, char *argv[]) {
 	else
 		input_file.file = stdin;
 
-	if (status == SUCCESS && output_path && strcmp(input_path, "-") != 0)
+	if (status == SUCCESS && output_path && strcmp(output_path, "-") != 0)
 		status = openFile(&output_file, output_path, "w");
 	else
 		output_file.file = stdout;
