@@ -48,10 +48,10 @@ RM = /home/darius/Documentos/Taller2017/CLION/clion-2017.1.1/bin/cmake/bin/cmake
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/darius/CLionProjects/TP1_Orga
+CMAKE_SOURCE_DIR = /home/darius/CLionProjects/TP0_orga
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/darius/CLionProjects/TP1_Orga/cmake-build-debug
+CMAKE_BINARY_DIR = /home/darius/CLionProjects/TP0_orga/cmake-build-debug
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -80,9 +80,9 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/darius/CLionProjects/TP1_Orga/cmake-build-debug/CMakeFiles /home/darius/CLionProjects/TP1_Orga/cmake-build-debug/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/darius/CLionProjects/TP0_orga/cmake-build-debug/CMakeFiles /home/darius/CLionProjects/TP0_orga/cmake-build-debug/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/darius/CLionProjects/TP1_Orga/cmake-build-debug/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/darius/CLionProjects/TP0_orga/cmake-build-debug/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -123,86 +123,59 @@ TP0_orga/fast:
 	$(MAKE) -f CMakeFiles/TP0_orga.dir/build.make CMakeFiles/TP0_orga.dir/build
 .PHONY : TP0_orga/fast
 
-tp0/buff.o: tp0/buff.c.o
+fileHandler.o: fileHandler.c.o
 
-.PHONY : tp0/buff.o
-
-# target to build an object file
-tp0/buff.c.o:
-	$(MAKE) -f CMakeFiles/TP0_orga.dir/build.make CMakeFiles/TP0_orga.dir/tp0/buff.c.o
-.PHONY : tp0/buff.c.o
-
-tp0/buff.i: tp0/buff.c.i
-
-.PHONY : tp0/buff.i
-
-# target to preprocess a source file
-tp0/buff.c.i:
-	$(MAKE) -f CMakeFiles/TP0_orga.dir/build.make CMakeFiles/TP0_orga.dir/tp0/buff.c.i
-.PHONY : tp0/buff.c.i
-
-tp0/buff.s: tp0/buff.c.s
-
-.PHONY : tp0/buff.s
-
-# target to generate assembly for a file
-tp0/buff.c.s:
-	$(MAKE) -f CMakeFiles/TP0_orga.dir/build.make CMakeFiles/TP0_orga.dir/tp0/buff.c.s
-.PHONY : tp0/buff.c.s
-
-tp0/fileHandler.o: tp0/fileHandler.c.o
-
-.PHONY : tp0/fileHandler.o
+.PHONY : fileHandler.o
 
 # target to build an object file
-tp0/fileHandler.c.o:
-	$(MAKE) -f CMakeFiles/TP0_orga.dir/build.make CMakeFiles/TP0_orga.dir/tp0/fileHandler.c.o
-.PHONY : tp0/fileHandler.c.o
+fileHandler.c.o:
+	$(MAKE) -f CMakeFiles/TP0_orga.dir/build.make CMakeFiles/TP0_orga.dir/fileHandler.c.o
+.PHONY : fileHandler.c.o
 
-tp0/fileHandler.i: tp0/fileHandler.c.i
+fileHandler.i: fileHandler.c.i
 
-.PHONY : tp0/fileHandler.i
+.PHONY : fileHandler.i
 
 # target to preprocess a source file
-tp0/fileHandler.c.i:
-	$(MAKE) -f CMakeFiles/TP0_orga.dir/build.make CMakeFiles/TP0_orga.dir/tp0/fileHandler.c.i
-.PHONY : tp0/fileHandler.c.i
+fileHandler.c.i:
+	$(MAKE) -f CMakeFiles/TP0_orga.dir/build.make CMakeFiles/TP0_orga.dir/fileHandler.c.i
+.PHONY : fileHandler.c.i
 
-tp0/fileHandler.s: tp0/fileHandler.c.s
+fileHandler.s: fileHandler.c.s
 
-.PHONY : tp0/fileHandler.s
+.PHONY : fileHandler.s
 
 # target to generate assembly for a file
-tp0/fileHandler.c.s:
-	$(MAKE) -f CMakeFiles/TP0_orga.dir/build.make CMakeFiles/TP0_orga.dir/tp0/fileHandler.c.s
-.PHONY : tp0/fileHandler.c.s
+fileHandler.c.s:
+	$(MAKE) -f CMakeFiles/TP0_orga.dir/build.make CMakeFiles/TP0_orga.dir/fileHandler.c.s
+.PHONY : fileHandler.c.s
 
-tp0/main.o: tp0/main.c.o
+main.o: main.c.o
 
-.PHONY : tp0/main.o
+.PHONY : main.o
 
 # target to build an object file
-tp0/main.c.o:
-	$(MAKE) -f CMakeFiles/TP0_orga.dir/build.make CMakeFiles/TP0_orga.dir/tp0/main.c.o
-.PHONY : tp0/main.c.o
+main.c.o:
+	$(MAKE) -f CMakeFiles/TP0_orga.dir/build.make CMakeFiles/TP0_orga.dir/main.c.o
+.PHONY : main.c.o
 
-tp0/main.i: tp0/main.c.i
+main.i: main.c.i
 
-.PHONY : tp0/main.i
+.PHONY : main.i
 
 # target to preprocess a source file
-tp0/main.c.i:
-	$(MAKE) -f CMakeFiles/TP0_orga.dir/build.make CMakeFiles/TP0_orga.dir/tp0/main.c.i
-.PHONY : tp0/main.c.i
+main.c.i:
+	$(MAKE) -f CMakeFiles/TP0_orga.dir/build.make CMakeFiles/TP0_orga.dir/main.c.i
+.PHONY : main.c.i
 
-tp0/main.s: tp0/main.c.s
+main.s: main.c.s
 
-.PHONY : tp0/main.s
+.PHONY : main.s
 
 # target to generate assembly for a file
-tp0/main.c.s:
-	$(MAKE) -f CMakeFiles/TP0_orga.dir/build.make CMakeFiles/TP0_orga.dir/tp0/main.c.s
-.PHONY : tp0/main.c.s
+main.c.s:
+	$(MAKE) -f CMakeFiles/TP0_orga.dir/build.make CMakeFiles/TP0_orga.dir/main.c.s
+.PHONY : main.c.s
 
 # Help Target
 help:
@@ -213,15 +186,12 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
 	@echo "... TP0_orga"
-	@echo "... tp0/buff.o"
-	@echo "... tp0/buff.i"
-	@echo "... tp0/buff.s"
-	@echo "... tp0/fileHandler.o"
-	@echo "... tp0/fileHandler.i"
-	@echo "... tp0/fileHandler.s"
-	@echo "... tp0/main.o"
-	@echo "... tp0/main.i"
-	@echo "... tp0/main.s"
+	@echo "... fileHandler.o"
+	@echo "... fileHandler.i"
+	@echo "... fileHandler.s"
+	@echo "... main.o"
+	@echo "... main.i"
+	@echo "... main.s"
 .PHONY : help
 
 

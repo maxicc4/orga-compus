@@ -1,0 +1,1 @@
+/usr/bin/cc  -g   CMakeFiles/TP0_orga.dir/main.c.o CMakeFiles/TP0_orga.dir/fileHandler.c.o  -o TP0_orga 
