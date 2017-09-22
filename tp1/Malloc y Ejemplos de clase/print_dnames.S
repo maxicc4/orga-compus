@@ -25,7 +25,7 @@ print_dnames:
 
 	# directiva para codigo PIC
 	.cprestore 24		# inserta aqui "sw gp, 24(sp)",
-				# mas "lw gp, 24(sp)" luego de cada jal.
+	        			# mas "lw gp, 24(sp)" luego de cada jal.
 	# salvado de callee-saved regs en SRA	
 	sw	$fp, 28(sp)
 	sw	ra, 32(sp)
