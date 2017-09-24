@@ -45,16 +45,32 @@ is_palindrome:
 
     beqz a1,return_false   ## if len == 0
 
-    li t0,0                ## i <=> t0, i = 0
+    li t0,0                 ## i <=> t0, i = 0
     li t1,2
-    div t2,a1,t1         ## t2 = len/2
+    div t2,a1,t1            ## t2 = len/2
 
-L1: addiu t3,a1,-1         ## (len - 1)
-    subu t3,t3,t0        ## (len - 1) - i
-    addu t4,a0,t0        ## t4 = puntero a char x izquierda; t4 = buff + i
-    addu t5,a0,t3        ## t5 = puntero a char x derecha; t5 = buff + [ len - 1 - i ]
+L1: addiu t3,a1,-1          ## (len - 1)
+    subu t3,t3,t0           ## (len - 1) - i
+    addu t4,a0,t0           ## t4 = puntero a char x izquierda; t4 = buff + i
+    addu t5,a0,t3           ## t5 = puntero a char x derecha; t5 = buff + [ len - 1 - i ]
     lb t6,0(t4)             ## t6 <=> buff[i]
     lb t7,0(t5)             ## t7 <=> buff[len - 1 - i]
+
+##Indistinguimos mayusculas y minusculas
+##Dado que los caracteres vienen validados sabemos que un caracter mayor a 97 en la tabla ascii es una letra mayuscula, con lo que tal comparacion es suficiente y no necesitamos acotar superiormente.
+
+    addiu t8,zero,97        ##t8 = a(97)
+IF1:bge t6,t8,uppercase1      ##si t6 >= a en ascii
+    b IF2
+uppercase1:                   ##Las minusculas pasan a ser mayusculas
+    addiu t6,t6,-32             ##32 es la diferencia entre mayusculas y minusculas
+
+IF2:bge t7,t8,uppercase2       ##Análogo pero con t7
+    b compare
+uppercase2:
+    addiu t7,t7,-32
+
+compare:
     bne t6,t7,return_false
     addiu t0,t0,1
     bge t0,t2,return_true
@@ -69,7 +85,7 @@ return_true:
     b return
 
 return:
-    lu gp,4(sp)
+    lw gp,4(sp)
     lw $fp,0(sp)
     addi sp,sp,8
     jr ra
