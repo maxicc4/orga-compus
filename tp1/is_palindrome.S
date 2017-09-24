@@ -49,8 +49,8 @@ is_palindrome:
     li t1,2
     div t2,a1,t1         ## t2 = len/2
 
-    addiu t3,a1,-1         ## (len - 1)
-L1: subu t3,t3,t0        ## (len - 1) - i
+L1: addiu t3,a1,-1         ## (len - 1)
+    subu t3,t3,t0        ## (len - 1) - i
     addu t4,a0,t0        ## t4 = puntero a char x izquierda; t4 = buff + i
     addu t5,a0,t3        ## t5 = puntero a char x derecha; t5 = buff + [ len - 1 - i ]
     lb t6,0(t4)             ## t6 <=> buff[i]
@@ -69,7 +69,7 @@ return_true:
     b return
 
 return:
-    lw gp,4(sp)
+    lu gp,4(sp)
     lw $fp,0(sp)
     addi sp,sp,8
     jr ra
