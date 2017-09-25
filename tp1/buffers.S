@@ -309,8 +309,7 @@ buildbuf:
     sw a1, 0(sp) #direccion
     sw a0, 4(sp) #tamaño
     
-    la	t9, mymalloc
-    jal t9
+    jal mymalloc
     
     lw a1, 0(sp)
     beqz v0, mallocErr

@@ -194,3 +194,68 @@ myfree_return:
 
 	j	ra
 	.end	myfree
+	
+.globl	myrealloc
+.ent	myrealloc
+myrealloc:
+
+	subu	sp, sp, 40
+	sw	ra, 32(sp)
+	sw	$fp, 28(sp)
+	move	$fp, sp
+
+    sw	a0, 24(sp)  # argument pointer.
+    sw	a1, 20(sp)  # argument old_size.
+    sw	a2, 16(sp)  # argument new_size.
+    
+    lw a0, 16(sp)
+    
+    la t9, mymalloc
+    
+    nop
+    
+    jalr t9
+
+    nop
+    
+    ## if (new ptr == 0) return 0
+    beqz v0, myrealloc_return
+    
+    nop
+    
+    sw v0, 12(sp)   # new ptr
+    
+    #copia
+    lw t0, 24(sp)    #old ptr
+    move t1, v0     # new ptr
+    
+    lw t2, 20(sp)    #old size
+    addu t2, t0, t2 #end old buf
+    
+myrealloc_do:
+    lb t3, 0(t0) # char aux
+    sb t3, 0(t1)
+    
+    addiu t0, 1
+    addiu t1, 1
+    
+    #while t0 < t2
+    bne t0, t2, myrealloc_do
+    
+    #free old ptr
+    lw a0, 24(sp)
+    
+    la t9, myfree
+    jalr t9
+    
+    lw v0, 12(sp)   # new ptr
+    j myrealloc_return
+    
+myrealloc_return:
+	# Destroy the stack frame.
+	move	sp, $fp
+	lw	ra, 32(sp)
+	lw	$fp, 28(sp)
+	addu	sp, sp, 40
+	j ra
+.end	myrealloc
