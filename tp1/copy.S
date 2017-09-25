@@ -12,7 +12,7 @@
 .globl	copyFile
 .ent	copyFile
 copyFile:
-    FRAME(16)
+    FRAME(24)
     
     jal initBuffers   
    	bltz v0, ret 
@@ -50,5 +50,5 @@ ret:
     
     lw v0, 4(sp) #status
 
-	RETURN(16)
+	RETURN(24)
 .end	copyFile

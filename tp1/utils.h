@@ -12,16 +12,16 @@
     .set reorder; \
     \
     subu sp, sp, SS; \
-    .cprestore (SS-8); \
-    sw $fp, (SS-4)(sp); \
-    sw ra, (SS)(sp); \
+    .cprestore (SS-12); \
+    sw $fp, (SS-8)(sp); \
+    sw ra, (SS-4)(sp); \
     move $fp, sp 
 
 /* Macro para destruir el stack de tamaño SS y saltar a $ra */
 #define RETURN(SS) \
-    lw	gp, (SS-8)(sp); \
-	lw	$fp, (SS-4)(sp); \
-	lw	ra, (SS)(sp); \
+    lw	gp, (SS-12)(sp); \
+	lw	$fp, (SS-8)(sp); \
+	lw	ra, (SS-4)(sp); \
 	addu	sp, sp, SS; \
 	jr	ra
 

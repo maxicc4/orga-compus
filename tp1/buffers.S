@@ -110,7 +110,7 @@ getch:
     #    aLeer -= v0
     #} while (v0 > 0 && aLeer > 0)
 
-   	sw t1, 4(sp) #aLeer
+   	sw t1, 0(sp) #aLeer
   	la t2, inbufcur
    	sw zero, 0(t2)
 
@@ -120,7 +120,7 @@ gch_loop:
     lw	a0, 0(t3)
     la a1, inbuf
     lw a1, 0(a1)
-	lw a2, 4(sp)
+	lw a2, 0(sp)
 	li	v0, SYS_read
 	syscall
 
@@ -138,9 +138,9 @@ gch_loop:
     j errgch
 
 chkread:   
-    lw a2, 4(sp) #aLeer
+    lw a2, 0(sp) #aLeer
     subu a2, a2, v0
-    sw a2, 4(sp)
+    sw a2, 0(sp)
     
     bgtz v0, andKeepReading
     
@@ -197,7 +197,7 @@ retgch:
 putch:
     FRAME(16)
        
-    sw a0, 4(sp)
+    sw a0, 0(sp)
 
     la t1, outbufsize
     lw t1, 0(t1)
@@ -220,7 +220,7 @@ nextpch:
     lw t0, 0(t0)
     
     # *(outbuf `outbufcur) = a0
-    lw a0, 4(sp)
+    lw a0, 0(sp)
     addu t3, t0, t2
     sb a0, 0(t3)
 
@@ -251,7 +251,7 @@ writebuf:
     #    aEscribir -= v0
     #} while (v0 > 0 && aEscribir > 0)
 
-    sw t2, 4(sp) #aEscribir
+    sw t2, 0(sp) #aEscribir
     
 write_do:
     #write(outfile, outbuf, aEscribir)
@@ -259,7 +259,7 @@ write_do:
     lw a0, 0(t3)
     la a1, outbuf
     lw a1, 0(a1)
-    lw a2, 4(sp)
+    lw a2, 0(sp)
     li v0, SYS_write
     syscall
 
@@ -278,9 +278,9 @@ write_do:
     j retWB
 
 chkwrite:   
-    lw a2, 4(sp) #aEscribir
+    lw a2, 0(sp) #aEscribir
     subu a2, a2, v0
-    sw a2, 4(sp)
+    sw a2, 0(sp)
     
     bgtz v0, andKeepWriting
     
@@ -304,15 +304,15 @@ retWB:
 
 .ent buildbuf
 buildbuf:
-    FRAME(16)
+    FRAME(24)
     
-    sw a0, 0(sp) #tamaño
-    sw a1, 4(sp) #direccion
+    sw a1, 0(sp) #direccion
+    sw a0, 4(sp) #tamaño
     
     la	t9, mymalloc
     jal t9
     
-    lw a1, 4(sp)
+    lw a1, 0(sp)
     beqz v0, mallocErr
     
     sw v0, 0(a1)
@@ -327,12 +327,12 @@ mallocErr:
 	li	v0, SYS_write
 	syscall
 	
-	lw a1, 4(sp)
+	lw a1, 0(sp)
     sw zero, 0(a1)
     li v0, ERROR
 
 retBB:
-    RETURN(16)
+    RETURN(24)
     
 .end buildbuf
 
