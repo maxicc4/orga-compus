@@ -33,7 +33,7 @@
 .globl	initBuffers
 .ent	initBuffers
 initBuffers:
-    FRAME(16)
+    FRAME(32)
 
 	# Salvo los parametros como globales
 	sw	a0, infile
@@ -58,14 +58,14 @@ initBuffers:
 	jal buildbuf
 	
 retInitBuffers:
-	RETURN(16)
+	RETURN(32)
 .end    initBuffers
 
 
 .globl	freeBuffers
 .ent freeBuffers
 freeBuffers:
-    FRAME(16)
+    FRAME(32)
 
    #flush
     jal flushBuf
@@ -84,13 +84,13 @@ elif:
    	
    	jal myfree
 else:
-	RETURN(16)
+	RETURN(32)
 .end freeBuffers
 
 .globl	getch
 .ent getch
 getch:
-    FRAME(16)
+    FRAME(32)
        
     la t1, inbufsize
     lw t1, 0(t1)
@@ -117,7 +117,7 @@ getch:
     #    aLeer -= v0
     #} while (v0 > 0 && aLeer > 0)
 
-   	sw t1, 0(sp) #aLeer
+   	sw t1, 16(sp) #aLeer
   	la t2, inbufcur
    	sw zero, 0(t2)
 
@@ -127,7 +127,7 @@ gch_loop:
     lw	a0, 0(t3)
     la a1, inbuf
     lw a1, 0(a1)
-	lw a2, 0(sp)
+	lw a2, 16(sp)
 	li	v0, SYS_read
 	syscall
 
@@ -145,9 +145,9 @@ gch_loop:
     j errgch
 
 chkread:   
-    lw a2, 0(sp) #aLeer
+    lw a2, 16(sp) #aLeer
     subu a2, a2, v0
-    sw a2, 0(sp)
+    sw a2, 16(sp)
     
     bgtz v0, andKeepReading
     
@@ -194,7 +194,7 @@ errgch:
     li v0, ERROR
     
 retgch:
-    RETURN(16)
+    RETURN(32)
           
 .end getch
 
@@ -202,9 +202,9 @@ retgch:
 .globl putch
 .ent putch
 putch:
-    FRAME(16)
+    FRAME(32)
        
-    sw a0, 0(sp)
+    sw a0, 16(sp)
 
     la t1, outbufsize
     lw t1, 0(t1)
@@ -227,7 +227,7 @@ nextpch:
     lw t0, 0(t0)
     
     # *(outbuf `outbufcur) = a0
-    lw a0, 0(sp)
+    lw a0, 16(sp)
     addu t3, t0, t2
     sb a0, 0(t3)
 
@@ -237,7 +237,7 @@ nextpch:
     sw t2, 0(t1)
 
 retpch:
-    RETURN(16)
+    RETURN(32)
           
 .end putch
 
@@ -322,14 +322,14 @@ retWB:
 
 .ent buildbuf
 buildbuf:
-    FRAME(24)
+    FRAME(40)
     
-    sw a1, 0(sp) #direccion
-    sw a0, 4(sp) #tamaño
+    sw a0, 16(sp) #tamaño
+    sw a1, 20(sp) #direccion
     
     jal mymalloc
     
-    lw a1, 0(sp)
+    lw a1, 20(sp)
     beqz v0, mallocErr
     
     sw v0, 0(a1)
@@ -345,12 +345,12 @@ mallocErr:
 	
 	syscall
 	
-	lw a1, 0(sp)
+	lw a1, 20(sp)
     sw zero, 0(a1)
     li v0, ERROR
 
 retBB:
-    RETURN(24)
+    RETURN(40)
     
 .end buildbuf
 
