@@ -80,4 +80,5 @@ return:
     addi sp,sp,8
     jr ra
 
-    .end charIsValid
+.end charIsValid
+    
