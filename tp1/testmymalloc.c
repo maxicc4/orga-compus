@@ -14,7 +14,7 @@ int main(int argc, char * const argv[])
     s1[99] = '\0';
     printf("%d %s\n", s1, s1);
         
-    char* s2 = (char*) myrealloc(s1, 100, 120);
+    char* s2 = (char*) myrealloc(s1, 120);
     printf("%d %s\n", s2, s2);
     
     strncpy(s2, text, 119);

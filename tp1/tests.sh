@@ -12,3 +12,18 @@ diff -s tests/output4Test.txt tests/output4Expected.txt
 
 cat tests/input5.txt | ./tp1 -i - -o - > tests/output5Test.txt
 diff -s tests/output5Test.txt tests/output5Expected.txt
+
+time ./tp1 -i tests/american-english -o tests/american-english-test.txt -I 10 -O 10
+diff -s tests/american-english-test.txt tests/american-english-output.txt
+
+time ./tp1 -i tests/american-english -o tests/american-english-test.txt -I 100 -O 100
+diff -s tests/american-english-test.txt tests/american-english-output.txt
+
+time ./tp1 -i tests/american-english -o tests/american-english-test.txt -I 1000 -O 1000
+diff -s tests/american-english-test.txt tests/american-english-output.txt
+
+time ./tp1 -i tests/american-english -o tests/american-english-test.txt -O 1000
+diff -s tests/american-english-test.txt tests/american-english-output.txt
+
+time ./tp1 -i tests/american-english -o tests/american-english-test.txt -I 1000
+diff -s tests/american-english-test.txt tests/american-english-output.txt
