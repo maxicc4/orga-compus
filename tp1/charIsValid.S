@@ -70,6 +70,7 @@ IF8:    li t1,95
 returnTrue:
     li v0,1
     b return
+
 returnFalse:
     li v0,0
     b return
@@ -81,3 +82,4 @@ return:
     jr ra
 
     .end charIsValid
+

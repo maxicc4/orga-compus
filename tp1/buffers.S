@@ -307,7 +307,7 @@ buildbuf:
     FRAME(24)
     
     sw a1, 0(sp) #direccion
-    sw a0, 4(sp) #tamaño
+    sw a0, 4(sp) #tamano
     
     jal mymalloc
     

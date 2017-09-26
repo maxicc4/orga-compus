@@ -1,14 +1,6 @@
 #include <sys/syscall.h>
 #include <mips/regdef.h>
 
-                    ##   |---------------|   Se trata de una funcion hoja, no invoca a ninguna otra
-                    ##   |    caller     |   Por eso el stack frame mide 8
-                    ## 8 |---------------|   >>>
-                    ##   |      gp       |
-                    ## 4 |---------------|       Saved Registers Area
-                    ##   |      fp       |
-                    ## 0 |---------------|   <<<
-
 	.text	## segmento de texto del programa
 	        ## lo que sigue a continuacion son instrucciones
                 ## y tiene que ser parte del code segment
