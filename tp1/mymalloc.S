@@ -86,7 +86,8 @@ mymalloc:
 	#
 	syscall
 	sw	v0, 32(sp)
-	beqz	v0, mymalloc_return
+	beqz	v0, mymalloc_failed
+	bnez    a3, mymalloc_failed
 
 	# Success. Check out the allocated pointer.
 	#
@@ -113,7 +114,12 @@ mymalloc:
 	lw	t0, 32(sp)
 	addiu	t0, t0, 8
 	sw	t0, 32(sp)
+	
+	b mymalloc_return
 
+mymalloc_failed:
+    sw zero, 32(sp)
+	
 mymalloc_return:
 	# Restore the return value.
 	#
@@ -205,10 +211,13 @@ myrealloc:
 	move	$fp, sp
 
     sw	a0, 32(sp)  # argument pointer.
-    sw	a1, 28(sp)  # argument old_size.
-    sw	a2, 24(sp)  # argument new_size.
+
+    lw t0, -4(a0)
+    sw	t0, 28(sp)  # argument old_size.
     
-    move a0, a2
+    sw	a1, 24(sp)  # argument new_size.
+    
+    move a0, a1
     la t9, mymalloc
     jalr t9 
     
@@ -222,7 +231,7 @@ myrealloc:
     move t1, v0     # new ptr
     
     lw t2, 28(sp)    #old size
-    addu t2, t0, t2 #end old buf
+    addu t2, t0, t2  #end old buf
     
 myrealloc_do:
     lb t3, 0(t0) # char aux

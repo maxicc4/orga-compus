@@ -3,7 +3,7 @@
 
 #include "utils.h"
 
-#define BUFFER_INITIAL_SIZE 4
+#define BUFFER_INITIAL_SIZE 32
 	  
 # segmento de texto del programa
 .text
@@ -23,6 +23,9 @@
 palindromes:
     FRAME(PALINDROMES_STACK)
     
+  	sw zero, BUFPTR(sp) #bufPtr = 0
+    
+    #recibe los mismos parámetros que esta función
     jal initBuffers   
    	bltz v0, retErr 
    	
@@ -64,8 +67,7 @@ loop:
     sw t2, BUFSIZE(sp)
     
     lw a0, BUFPTR(sp) #bufPtr
-    move a1, t0 #oldSize
-    move a2, t2 #newSize
+    move a1, t2 #newSize
     jal myrealloc
     
    	bltz v0, pMemError 
@@ -103,12 +105,9 @@ isSpace:
     j loop    
     
 loopEnd:
-    ## if (! ateof) return error
-    la t0, ineof
-    lw t0, 0(t0)
-    bnez t0, retErr
-    
-    ##else
+    ## if (! isEof) return error
+    jal isEof
+    bnez v0, retErr
     
     #chequear si lo que quedo en el buffer es palindromo
     lw a0, BUFPTR(sp)    #bufptr

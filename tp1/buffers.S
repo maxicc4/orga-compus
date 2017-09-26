@@ -3,22 +3,29 @@
 
 #include "utils.h"
 	
-.globl	ineof
-	
 .data
 .align 2
     infile:      .word 0
     inbuf:       .word 0
     inbufsize:   .word 0
     inbufcur:    .word 0
-    ineof:       .byte 0
+    ineof:       .word 0
     
     outfile:     .word 0
     outbuf:      .word 0
     outbufsize:  .word 0
     outbufcur:   .word 0
     
-# segmento de texto del programa
+.rdata
+.align 2
+    mallocError:	.ascii "Error resevando memoria\n"
+    readError:      .ascii "Error de lectura\n"
+    writeError:	    .ascii "Error de escritura\n"
+
+#define mallocErrorLen 24
+#define readErrorLen 17
+#define writeErrorLen 19    
+   
 .text
 .abicalls
 .align 2
@@ -61,7 +68,7 @@ freeBuffers:
     FRAME(16)
 
    #flush
-    jal writebuf
+    jal flushBuf
     
     #free inbuf
    	la t0, inbuf
@@ -130,7 +137,7 @@ gch_loop:
     #print error
     li  a0, 2
     la	a1, readError
-	li	a2, 17 #len(readError)
+	li	a2, readErrorLen
 	li	v0, SYS_write
 	syscall
 	
@@ -208,7 +215,7 @@ putch:
     ##if(cur >= size)
     blt t2, t1, nextpch
       
-    jal writebuf
+    jal flushBuf
     
     bltz v0, retpch
     
@@ -234,9 +241,20 @@ retpch:
           
 .end putch
 
+.globl isEof
+.ent isEof
+isEof:
+    FRAME(8)
+    
+    la t0, ineof
+    lw v0, 0(t0)
+    
+    RETURN(8)
+.end isEof    
 
-.ent writebuf
-writebuf:
+
+.ent flushBuf
+flushBuf:
     FRAME(16)
     
     la t2, outbufcur
@@ -245,7 +263,7 @@ writebuf:
     #aEscribir = outbufcur
     #do {
     #    v0 = write(outfile, outbuf, aEscribir)
-    ##    if(error) 
+    ##   if(error) 
     #       print error
     #       return -1
     #    aEscribir -= v0
@@ -262,14 +280,14 @@ write_do:
     lw a2, 0(sp)
     li v0, SYS_write
     syscall
-
+    
     ## if(a3 == 0)
     beqz a3, chkwrite
 
     #print error
     li  a0, 2
     la	a1, writeError
-    li	a2, 19 #len(writeError)
+    li	a2, writeErrorLen
     li	v0, SYS_write
     syscall
 	
@@ -299,7 +317,7 @@ andKeepWriting:
 retWB:
     RETURN(16)
     
-.end writebuf
+.end flushBuf
 
 
 .ent buildbuf
@@ -321,9 +339,10 @@ buildbuf:
 mallocErr:
     #Imprimo mensaje de error
     li  a0, 2
-    la	a1, memError
-	li	a2, 24 #len(memError)
+    la	a1, mallocError
+	li	a2, mallocErrorLen
 	li	v0, SYS_write
+	
 	syscall
 	
 	lw a1, 0(sp)
@@ -335,8 +354,3 @@ retBB:
     
 .end buildbuf
 
-.rdata
-.align 2
-    memError:	.ascii "Error resevando memoria\n"
-    readError:	.ascii "Error de lectura\n"
-    writeError:	.ascii "Error de escritura\n"
