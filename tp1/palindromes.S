@@ -3,7 +3,7 @@
 
 #include "utils.h"
 
-#define BUFFER_INITIAL_SIZE 32
+#define BUFFER_INITIAL_SIZE 4
 	  
 # segmento de texto del programa
 .text
@@ -28,6 +28,8 @@ palindromes:
    	
    	li t0, BUFFER_INITIAL_SIZE
    	sw t0, BUFSIZE(sp) #bufsize
+   	
+   	move a0, t0
    	jal mymalloc
    	
    	sw v0, BUFPTR(sp) #bufPtr
@@ -55,8 +57,8 @@ loop:
     lw t0, BUFSIZE(sp) #bufSize
     lw t1, LEN(sp) #length
 
-    ##if (length >= bufSize)
-    blt t1, t0, copy
+    ##if (length == bufSize)
+    blt t1, t0, append
     
     sll t2, t0, 1 #bufSize *=2
     sw t2, BUFSIZE(sp)
@@ -70,7 +72,7 @@ loop:
    	
    	sw v0, BUFPTR(sp) #bufptr
     
-copy: 
+append: 
     #buf[len] = char
     lw t1, LEN(sp) #length
     lw t2, BUFPTR(sp) #bufPtr
@@ -113,7 +115,7 @@ loopEnd:
     lw a1, LEN(sp)    #length
     jal checkWord
     
-    b ret
+    b cleanup
            
 pMemError:
     #imprimir mensaje por stderr
@@ -126,11 +128,17 @@ pMemError:
     
 retErr:
     li v0, ERROR
-ret:
+cleanup:
     sw v0, STATUS(sp) #status
         
     jal freeBuffers
     
+    ##if (bufptr != 0) free(bufptr)
+    lw a0, BUFPTR(sp) #bufPtr
+    beqz a0, ret
+    
+    jal myfree   
+ret:    
     lw v0, STATUS(sp) #status
 
 	RETURN(PALINDROMES_STACK)

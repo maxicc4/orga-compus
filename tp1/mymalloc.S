@@ -199,37 +199,29 @@ myfree_return:
 .ent	myrealloc
 myrealloc:
 
-	subu	sp, sp, 40
-	sw	ra, 32(sp)
-	sw	$fp, 28(sp)
+	subu	sp, sp, 48
+	sw	ra, 40(sp)
+	sw	$fp, 36(sp)
 	move	$fp, sp
 
-    sw	a0, 24(sp)  # argument pointer.
-    sw	a1, 20(sp)  # argument old_size.
-    sw	a2, 16(sp)  # argument new_size.
+    sw	a0, 32(sp)  # argument pointer.
+    sw	a1, 28(sp)  # argument old_size.
+    sw	a2, 24(sp)  # argument new_size.
     
-    lw a0, 16(sp)
-    
+    move a0, a2
     la t9, mymalloc
-    
-    nop
-    
-    jalr t9
-
-    nop
+    jalr t9 
     
     ## if (new ptr == 0) return 0
     beqz v0, myrealloc_return
     
-    nop
-    
-    sw v0, 12(sp)   # new ptr
+    sw v0, 20(sp)   # new ptr
     
     #copia
-    lw t0, 24(sp)    #old ptr
+    lw t0, 32(sp)    #old ptr
     move t1, v0     # new ptr
     
-    lw t2, 20(sp)    #old size
+    lw t2, 28(sp)    #old size
     addu t2, t0, t2 #end old buf
     
 myrealloc_do:
@@ -243,19 +235,19 @@ myrealloc_do:
     bne t0, t2, myrealloc_do
     
     #free old ptr
-    lw a0, 24(sp)
+    lw a0, 32(sp)
     
     la t9, myfree
     jalr t9
     
-    lw v0, 12(sp)   # new ptr
+    lw v0, 20(sp)   # new ptr
     j myrealloc_return
     
 myrealloc_return:
 	# Destroy the stack frame.
 	move	sp, $fp
-	lw	ra, 32(sp)
-	lw	$fp, 28(sp)
-	addu	sp, sp, 40
+	lw	ra, 40(sp)
+	lw	$fp, 36(sp)
+	addu	sp, sp, 48
 	j ra
 .end	myrealloc
