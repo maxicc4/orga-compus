@@ -1,7 +1,7 @@
 #include <mips/regdef.h>
 #include <sys/syscall.h>
 
-#include "utils.h"
+#include "../utils.h"
 	  
 # segmento de texto del programa
 .text
@@ -24,10 +24,9 @@ loop:
     bgez v0, procch
     
     ## else if (! ateof) return error
-    la t0, ineof
-    lw t0, 0(t0)
+    jal isEof
     
-    bnez t0, retErr
+    bnez v0, retErr
     
     ## else return success
     li v0, SUCCESS

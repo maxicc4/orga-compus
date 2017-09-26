@@ -8,8 +8,6 @@
 #define ERROR -1
 #define SUCCESS 0
 
-//gcc testbuf.* buffers.S mymalloc.S -o testbuf -ggdb
-
 extern int copyFile(int input_file_no, int output_file_no, size_t input_buf_size, size_t output_buf_size);
 
 int openFile(FILE** file, const char *path, const char *mode) {
