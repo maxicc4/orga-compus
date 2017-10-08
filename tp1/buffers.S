@@ -3,6 +3,10 @@
 
 #include "utils.h"
 	
+/*
+int infile, inbuf, inbufsize, inblufcur, ineof
+int outfile, outbuf, outbufsize, outbufcur;
+*/	
 .data
 .align 2
     infile:      .word 0
@@ -30,6 +34,25 @@
 .abicalls
 .align 2
 
+/*
+inf initBuffers(int input_file_no, int output_file_no, size_t input_buf_size, size_t output_buf_size) {
+    infile = input_file_no
+    inbufsize = input_buf_size
+    inbufcur = inbufsize
+
+    outfile = output_file_no
+    outbufsize = output_buf_size
+    outbufcur = 0
+    
+    int status = buildbuf(inbufsize, &inbuf)
+    if (status < 0)
+        return status
+        
+    status = buildbuf(outbufsize, &outbuf)
+    
+    return status
+}
+*/
 .globl	initBuffers
 .ent	initBuffers
 initBuffers:
@@ -61,15 +84,22 @@ retInitBuffers:
 	RETURN(32)
 .end    initBuffers
 
-
+/*
+void freeBuffers() {
+    if (inbuf != 0)
+        myfree(inbuf)
+    
+    if (outbuf != 0) {
+        flushBuf()
+        myfree(outbuf)
+    }
+}
+*/
 .globl	freeBuffers
 .ent freeBuffers
 freeBuffers:
     FRAME(32)
 
-   #flush
-    jal flushBuf
-    
     #free inbuf
    	la t0, inbuf
    	lw a0, 0(t0)
@@ -82,11 +112,45 @@ elif:
    	lw a0, 0(t0)  	
    	beqz a0, else
    	
+    jal flushBuf
+    
+    la t0, outbuf
+    lw a0, 0(t0)
    	jal myfree
 else:
 	RETURN(32)
 .end freeBuffers
 
+/*
+int getch() {
+    if (inbufcur >= inbufsize) {
+        if (ineof)
+            return ERROR
+
+        inbufcur = 0        
+
+        int leido = 0
+        do {
+            int v0 = read(infile, inbuf+leido, inbufsize - leido)
+            if (error) {
+                write(2, readError, readErrorLen)
+                return ERROR
+            }
+            leido += v0
+        } while (v0 > 0 && leido < inbufsize)        
+        
+        if (v0 == 0) {
+            ineof = 1
+            inbufsize = leido
+            if (leido == 0)
+                return ERROR
+        }
+    }
+    
+    char c = (char) *(inbuf + inbufcur++)
+    return c
+}
+*/
 .globl	getch
 .ent getch
 getch:
@@ -107,33 +171,34 @@ getch:
     ##if (ateof) return ERROR
     bgtz t4, errgch
       
-    #aLeer = inbufsize
-    #cur = 0
-    #do {
-    #    v0 = read(infile, inbuf, aLeer)
-    ##    if(error) 
-    #       print error
-    #       return -1
-    #    aLeer -= v0
-    #} while (v0 > 0 && aLeer > 0)
-
-   	sw t1, 16(sp) #aLeer
   	la t2, inbufcur
    	sw zero, 0(t2)
+   	
+    sw zero, 16(sp) #leido
 
 gch_loop:
-    #read(infile, inbuf, aLeer)
-    la  t3, infile
-    lw	a0, 0(t3)
+    la t1, inbufsize
+    lw t1, 0(t1)
+    
+    lw t2, 16(sp) #leido
+
+    #read(infile, inbuf+leido, inbufsize-leido)
+    la  a0, infile
+    lw	a0, 0(a0)
+    
     la a1, inbuf
     lw a1, 0(a1)
-	lw a2, 16(sp)
-	li	v0, SYS_read
+    addu a1, a1, t2
+    
+    move a2, t1
+    subu a2, a2, t2
+    
+    li	v0, SYS_read
 	syscall
-
+	
     ## if(a3 == 0)
     beqz a3, chkread
-
+    
     #print error
     li  a0, 2
     la	a1, readError
@@ -145,45 +210,46 @@ gch_loop:
     j errgch
 
 chkread:   
-    lw a2, 16(sp) #aLeer
-    subu a2, a2, v0
+    lw a2, 16(sp) #leido
+    addu a2, a2, v0
     sw a2, 16(sp)
     
+    nop
     bgtz v0, andKeepReading
+    nop
     
     #v0 == 0 -> EOF
     li t0, 1
     la t1, ineof
     sw t0, 0(t1)
 
-    #size -= aLeer
+    #size = leido
     la t2, inbufsize
-    lw t3, 0(t2)
+    sw a2, 0(t2)
 
-    subu t3, t3, a2
-    sw t3, 0(t2)
-    
     ##if(size > 0)
-    bgtz t3, nextgch
+    bgtz a2, nextgch
 
     #return ERROR
     j errgch
 
-andKeepReading:
-    bgtz a2, gch_loop 
+andKeepReading: #leido < inbufsize
+    la t1, inbufsize
+    lw t1, 0(t1)
+    blt a2, t1, gch_loop 
     
 nextgch:
     la t0, inbuf
     lw t0, 0(t0)
     
-    la t2, inbufcur
-	lw t2, 0(t2)
+    la t1, inbufcur
+	lw t2, 0(t1)
     
     # v0 = *(inbuf + inbufcur)
     addu t3, t0, t2
     lbu v0, 0(t3)
 
-    #cur++
+    #inbufcur++
     addiu t2, t2, 1
     la t1, inbufcur
     sw t2, 0(t1)
@@ -198,7 +264,17 @@ retgch:
           
 .end getch
 
-
+/*
+int putch (char c) {   
+    if (outbufcur >= outbufsize) {
+        int status = flushBuf()
+        if (status < 0)
+            return ERROR
+    }
+    *(outbuf + outbufcur++) = c
+    return SUCCESS
+}
+*/
 .globl putch
 .ent putch
 putch:
@@ -226,7 +302,7 @@ nextpch:
     la t0, outbuf
     lw t0, 0(t0)
     
-    # *(outbuf `outbufcur) = a0
+    # *(outbuf + outbufcur) = a0
     lw a0, 16(sp)
     addu t3, t0, t2
     sb a0, 0(t3)
@@ -235,10 +311,11 @@ nextpch:
     addiu t2, t2, 1
     la t1, outbufcur
     sw t2, 0(t1)
+    
+    li v0, SUCCESS
 
 retpch:
     RETURN(32)
-          
 .end putch
 
 .globl isEof
@@ -252,32 +329,46 @@ isEof:
     RETURN(8)
 .end isEof    
 
-
+/*
+int flushBuf() {
+    if (outbuf != 0) {
+        int escrito = 0;
+        int v0;
+        do {
+            v0 = write(outfile, outbuf+escrito, outbufcur-escrito)
+            if (error) {
+                write(2, writeError, writeErrorLen)
+                return ERROR
+            }
+            escrito += v0
+        } while (v0 > 0 && escrito < outbufcur)
+        
+        outbufcur = 0
+        return SUCCESS
+    }
+    return ERROR
+}
+*/
 .ent flushBuf
 flushBuf:
     FRAME(16)
-    
-    la t2, outbufcur
-    lw t2, 0(t2)
-    
-    #aEscribir = outbufcur
-    #do {
-    #    v0 = write(outfile, outbuf, aEscribir)
-    ##   if(error) 
-    #       print error
-    #       return -1
-    #    aEscribir -= v0
-    #} while (v0 > 0 && aEscribir > 0)
-
-    sw t2, 0(sp) #aEscribir
+    sw zero, 0(sp) #escrito  
     
 write_do:
-    #write(outfile, outbuf, aEscribir)
-    la t3, outfile
-    lw a0, 0(t3)
+    lw t1, 0(sp) #escrito
+
+    #write(outfile, outbuf+escrito, outbufcur-escrito)
+    la a0, outfile
+    lw a0, 0(a0)
+    
     la a1, outbuf
     lw a1, 0(a1)
-    lw a2, 0(sp)
+    addu a1, a1, t1
+    
+    la a2, outbufcur
+    lw a2, 0(a2)
+    subu a2, a2, t1
+    
     li v0, SYS_write
     syscall
     
@@ -293,33 +384,51 @@ write_do:
 	
     #return ERROR
     li v0, ERROR
-    j retWB
+    j retFB
 
 chkwrite:   
-    lw a2, 0(sp) #aEscribir
-    subu a2, a2, v0
-    sw a2, 0(sp)
+    lw t0, 0(sp) #escrito += v0
+    addu t0, t0, v0
+    sw t0, 0(sp)
     
+    #v0 > 0
     bgtz v0, andKeepWriting
     
     #return ERROR
     li v0, ERROR
-    j retWB
+    j retFB
 
 andKeepWriting:
-    bgtz a2, write_do 
+    la t1, outbufcur
+    lw t1, 0(t1)
+
+    # escrito < outbufcur
+    blt t0, t1, write_do 
     
     #outbufcur = 0
-    la t2, outbufcur
-    sw zero, 0(t2)
+    la t1, outbufcur
+    sw zero, 0(t1)
     
-    li v0, SUCCESS
-retWB:
+    li v0, SUCCESS  
+retFB:
     RETURN(16)
     
 .end flushBuf
 
 
+/*
+int buildbuf(size_t bufsize, void** buf) {
+    void* v0 = mymalloc(bufsize)
+    if (v0 == 0) {
+        write(2, mallocError, mallocErrorLen);
+        *buf = 0
+        return ERROR
+    }
+    
+    *buf = v0
+    return SUCCESS
+}
+*/
 .ent buildbuf
 buildbuf:
     FRAME(40)

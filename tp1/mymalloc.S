@@ -201,6 +201,33 @@ myfree_return:
 	j	ra
 	.end	myfree
 	
+/*
+void* myrealloc(void* pointer, size_t new_size) {
+    void* v0 = mymalloc(new_size)
+    
+    if (v0 == 0)
+        return 0
+        
+    void* newptr = v0
+        
+    size_t old_size = (size_t) *(pointer-4)
+        
+    char* t0 = (char*) pointer
+    char* t1 = (char*) v0
+    void* t2 = pointer + old_size
+    
+    do {
+        char aux = (char) *t0
+        *t1 = char
+        t0+=1;
+        t1+=1;
+    } while (t0 < t2)
+    
+    myfree(pointer)
+    
+    return newptr
+}
+*/
 .globl	myrealloc
 .ent	myrealloc
 myrealloc:
