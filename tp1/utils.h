@@ -15,7 +15,12 @@
     .cprestore (SS-12); \
     sw $fp, (SS-8)(sp); \
     sw ra, (SS-4)(sp); \
-    move $fp, sp 
+    move $fp, sp ; \
+    \
+    sw a0, (SS)(sp); \
+    sw a1, (SS+4)(sp); \
+    sw a2, (SS+8)(sp); \
+    sw a3, (SS+12)(sp)
 
 /* Macro para destruir el stack de tamano SS y saltar a $ra */
 #define RETURN(SS) \

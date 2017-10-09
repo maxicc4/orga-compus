@@ -3,8 +3,6 @@
 #include <sys/types.h>
 #include "mymalloc.h"
 
-//gcc testmymalloc.c mymalloc.S -ggdb -o testmymalloc
-
 static char* text = "Copies the first num characters of source to destination. If the end of the source C string (which is signaled by a null-character) is found before num characters have been copied, destination is padded with zeros until a total of num characters have been written to it.";
 
 int main(int argc, char * const argv[])
