@@ -53,8 +53,8 @@ L1: addiu t3,a1,-1          ## (len - 1)
     subu t3,t3,t0           ## (len - 1) - i
     addu t4,a0,t0           ## t4 = puntero a char x izquierda; t4 = buff + i
     addu t5,a0,t3           ## t5 = puntero a char x derecha; t5 = buff + [ len - 1 - i ]
-    lb t6,0(t4)             ## t6 <=> buff[i]
-    lb t7,0(t5)             ## t7 <=> buff[len - 1 - i]
+    lbu t6,0(t4)             ## t6 <=> buff[i]
+    lbu t7,0(t5)             ## t7 <=> buff[len - 1 - i]
 
 ##Indistinguimos mayusculas y minusculas
 ##Dado que los caracteres vienen validados sabemos que un caracter mayor a 97 en la tabla ascii es una letra mayuscula, con lo que tal comparacion es suficiente y no necesitamos acotar superiormente.

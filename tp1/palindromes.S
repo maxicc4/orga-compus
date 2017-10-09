@@ -18,6 +18,64 @@
 #define CHAR 28
 #define STATUS 32
 
+/*
+int palindromes(int input_file_no, int output_file_no, size_t input_buf_size, size_t output_buf_size) {
+    int status = initBuffers(input_file_no, output_file_no, input_buf_size, output_buf_size)
+    
+    if (status >= 0) {
+        size_t bufsize = BUFFER_INITIAL_SIZE
+        char* bufptr = (char*) mymalloc(bufsize)
+        if (bufptr == 0) {
+            write(2, memError, memErrorLen)
+            status = ERROR
+        } else {
+            size_t length = 0
+            while(true) {
+                int ch = getch()
+                
+                if (ch < 0)
+                    break
+                
+                if(isvalid(ch)) {
+                    if (length == bufsize) {
+                        bufSize *=2
+                        void* newptr = myrealloc(bufptr, bufSize)
+                        if (newptr == 0) {
+                            write(2, memError, memErrorLen)
+                            status = ERROR
+                            break
+                        } else
+                            bufptr = (char*) newptr
+                    }
+                    
+                    if (status >= 0) {
+                        buf[length] = ch
+                        length += 1
+                    }
+                } else {
+                    status = checkWord(bufptr, length)
+                    if (status < 0)
+                        break;
+                    
+                    length = 0
+                }
+            }
+            
+            if (! isEof)
+                status = ERROR
+            else
+                checkWord(bufptr, length)
+        }
+    }
+    
+    freeBuffers()
+    
+    if (bufptr != 0)
+        free(bufptr)
+    
+    return status
+}
+*/
 .globl	palindromes
 .ent	palindromes
 palindromes:
@@ -107,7 +165,7 @@ isSpace:
 loopEnd:
     ## if (! isEof) return error
     jal isEof
-    bnez v0, retErr
+    beqz v0, retErr
     
     #chequear si lo que quedo en el buffer es palindromo
     lw a0, BUFPTR(sp)    #bufptr
@@ -149,6 +207,26 @@ ret:
 #define P_BUFPTR (CHECK_WORD_STACK)
 #define P_LEN (CHECK_WORD_STACK+4)
 
+/*
+int checkWord(char* buf, size_t length) {
+    int status
+    if (len > 0) {
+        if (is_palindrome(buf, length)) {
+            for (int i = 0; i < length; i++) {
+                char ch = buf[i]
+                status = putch(ch)
+                if (status < 0)
+                    return status
+            }
+            status = putch('\n')
+            if (status < 0)
+                return status
+        } else {
+            status = 0
+        }
+    }
+}
+*/
 .globl checkWord
 .ent checkWord
 checkWord:
@@ -172,7 +250,7 @@ for_loop:
     lw t1, P_BUFPTR(sp) #bufptr
     addu t1, t1, t0 #bufptr+i
 
-    lb a0, 0(t1)
+    lbu a0, 0(t1)
     jal putch
     
     bltz v0, checkWordRet
