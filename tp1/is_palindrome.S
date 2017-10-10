@@ -1,13 +1,28 @@
 #include <sys/syscall.h>
 #include <mips/regdef.h>
 
-                    ##   |---------------|   Se trata de una funcion hoja, no invoca a ninguna otra
-                    ##   |    caller     |   Por eso el stack frame mide 8
-                    ## 8 |---------------|   >>>
-                    ##   |      gp       |
-                    ## 4 |---------------|       Saved Registers Area
-                    ##   |      fp       |
-                    ## 0 |---------------|   <<<
+##   |---------------|   Se trata de una funcion hoja, no invoca a ninguna otra
+##   |    caller     |   Por eso el stack frame mide 8
+## 8 |---------------|   >>>
+##   |      gp       |
+## 4 |---------------|       Saved Registers Area
+##   |      fp       |
+## 0 |---------------|   <<<
+
+
+##Codigo C
+##bool is_palindrome(char *buff, size_t len) {
+##	  if (len == 0)
+##	  	  return false;
+##
+##    for (int i = 0; i < len / 2; ++i) {
+##		  if (tolower(buff[i]) != tolower(buff[len - 1 - i]))
+##		      return false;
+##	  }
+##	  return true;
+##}
+##
+
 
 	.text	## segmento de texto del programa
 	        ## lo que sigue a continuacion son instrucciones
@@ -22,6 +37,7 @@
 
 	.ent	is_palindrome   ## el label palindrome es la direccion de la primera
 	                        ## instruccion de la funcion
+
 
 is_palindrome:
     .frame $fp, 8, ra
