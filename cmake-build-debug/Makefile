@@ -204,6 +204,33 @@ tp0/main.c.s:
 	$(MAKE) -f CMakeFiles/TP0_orga.dir/build.make CMakeFiles/TP0_orga.dir/tp0/main.c.s
 .PHONY : tp0/main.c.s
 
+tp0/main2.o: tp0/main2.c.o
+
+.PHONY : tp0/main2.o
+
+# target to build an object file
+tp0/main2.c.o:
+	$(MAKE) -f CMakeFiles/TP0_orga.dir/build.make CMakeFiles/TP0_orga.dir/tp0/main2.c.o
+.PHONY : tp0/main2.c.o
+
+tp0/main2.i: tp0/main2.c.i
+
+.PHONY : tp0/main2.i
+
+# target to preprocess a source file
+tp0/main2.c.i:
+	$(MAKE) -f CMakeFiles/TP0_orga.dir/build.make CMakeFiles/TP0_orga.dir/tp0/main2.c.i
+.PHONY : tp0/main2.c.i
+
+tp0/main2.s: tp0/main2.c.s
+
+.PHONY : tp0/main2.s
+
+# target to generate assembly for a file
+tp0/main2.c.s:
+	$(MAKE) -f CMakeFiles/TP0_orga.dir/build.make CMakeFiles/TP0_orga.dir/tp0/main2.c.s
+.PHONY : tp0/main2.c.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -222,6 +249,9 @@ help:
 	@echo "... tp0/main.o"
 	@echo "... tp0/main.i"
 	@echo "... tp0/main.s"
+	@echo "... tp0/main2.o"
+	@echo "... tp0/main2.i"
+	@echo "... tp0/main2.s"
 .PHONY : help
 
 

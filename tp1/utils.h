@@ -4,7 +4,7 @@
 #define SUCCESS 0
 #define ERROR -1
 
-/* Macro para construir el stack de tamaño SS */
+/* Macro para construir el stack de tamano SS */
 #define FRAME(SS) \
     .frame $fp, SS, ra; \
     .set noreorder; \
@@ -22,7 +22,7 @@
     sw a2, (SS+8)(sp); \
     sw a3, (SS+12)(sp)
 
-/* Macro para destruir el stack de tamaño SS y saltar a $ra */
+/* Macro para destruir el stack de tamano SS y saltar a $ra */
 #define RETURN(SS) \
     lw	gp, (SS-12)(sp); \
 	lw	$fp, (SS-8)(sp); \

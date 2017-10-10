@@ -9,5 +9,5 @@ set(SOURCE_FILES tp0/main.c
         tp0/flags.h
         tp0/buff.h
         tp0/buff.c
-        )
+        tp0/main2.c)
 add_executable(TP0_orga ${SOURCE_FILES})
