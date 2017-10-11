@@ -12,7 +12,7 @@
 .globl	copyFile
 .ent	copyFile
 copyFile:
-    FRAME(24)
+    FRAME(48)
     
     jal initBuffers   
    	bltz v0, ret 
@@ -33,9 +33,9 @@ loop:
     b ret
     
 procch:
-    sw v0, 0(sp) #char
+    sw v0, 16(sp) #char
 
-    lw a0, 0(sp)
+    lw a0, 16(sp)
     jal putch
     
     bltz v0, retErr
@@ -43,11 +43,11 @@ procch:
 retErr:
     li v0, ERROR
 ret:
-    sw v0, 4(sp) #status
+    sw v0, 20(sp) #status
     
     jal freeBuffers
     
-    lw v0, 4(sp) #status
+    lw v0, 20(sp) #status
 
-	RETURN(24)
+	RETURN(48)
 .end	copyFile

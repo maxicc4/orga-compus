@@ -433,14 +433,9 @@ int buildbuf(size_t bufsize, void** buf) {
 buildbuf:
     FRAME(40)
     
-<<<<<<< HEAD
-    sw a1, 0(sp) #direccion
-    sw a0, 4(sp) #tamano
-=======
     sw a0, 16(sp) #tamaño
     sw a1, 20(sp) #direccion
->>>>>>> f8102770e19899e794a8aba793ad2ab790243f30
-    
+  
     jal mymalloc
     
     lw a1, 20(sp)

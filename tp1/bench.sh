@@ -6,4 +6,3 @@ for ((i=0; i<${#bufsizes[@]}; i+=2)); do
   diff tests/output7Expected.txt out
   echo ""
 done
-cd sh   
